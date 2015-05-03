@@ -18,6 +18,7 @@ import io.kaif.mobile.config.ApiConfiguration;
 import io.kaif.mobile.json.ApiResponseDeserializer;
 import io.kaif.mobile.model.oauth.AccessTokenInfo;
 import io.kaif.mobile.model.oauth.AccessTokenManager;
+import retrofit.CustomRestAdapter;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
@@ -37,31 +38,31 @@ public class ServiceModule {
   @Provides
   @Singleton
   @SuppressWarnings("unchecked")
-  public AccountService provideAccountService(@Named("apiRestAdapter") RestAdapter restAdapter) {
+  public AccountService provideAccountService(@Named("apiRestAdapter") CustomRestAdapter restAdapter) {
     return restAdapter.create(AccountService.class);
   }
 
   @Provides
   @Singleton
-  public ZoneService provideZoneService(@Named("apiRestAdapter") RestAdapter restAdapter) {
+  public ZoneService provideZoneService(@Named("apiRestAdapter") CustomRestAdapter restAdapter) {
     return restAdapter.create(ZoneService.class);
   }
 
   @Provides
   @Singleton
-  public VoteService provideVoteService(@Named("apiRestAdapter") RestAdapter restAdapter) {
+  public VoteService provideVoteService(@Named("apiRestAdapter") CustomRestAdapter restAdapter) {
     return restAdapter.create(VoteService.class);
   }
 
   @Provides
   @Singleton
-  public DebateService provideDebateService(@Named("apiRestAdapter") RestAdapter restAdapter) {
+  public DebateService provideDebateService(@Named("apiRestAdapter") CustomRestAdapter restAdapter) {
     return restAdapter.create(DebateService.class);
   }
 
   @Provides
   @Singleton
-  public ArticleService provideArticleService(@Named("apiRestAdapter") RestAdapter restAdapter) {
+  public ArticleService provideArticleService(@Named("apiRestAdapter") CustomRestAdapter restAdapter) {
     return restAdapter.create(ArticleService.class);
   }
 
@@ -96,7 +97,7 @@ public class ServiceModule {
   @Provides
   @Named("apiRestAdapter")
   @Singleton
-  RestAdapter provideApiRestAdapter(RequestInterceptor interceptor,
+  CustomRestAdapter provideApiRestAdapter(RequestInterceptor interceptor,
       ApiConfiguration apiConfiguration,
       OkHttpClient okHttpClient) {
 
@@ -104,7 +105,7 @@ public class ServiceModule {
     final Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Object.class,
         new ApiResponseDeserializer()).create();
 
-    return new RestAdapter.Builder().setRequestInterceptor(interceptor)
+    return new CustomRestAdapter.Builder().setRequestInterceptor(interceptor)
         .setEndpoint(apiConfiguration.getEndPoint())
         .setClient(new OkClient(okHttpClient))
         .setConverter(new GsonConverter(gson))
